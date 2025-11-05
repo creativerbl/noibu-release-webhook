@@ -3,10 +3,13 @@ const messageEl = document.getElementById("message");
 const releaseForm = document.getElementById("release-form");
 const submitButton = document.getElementById("submit-button");
 const releaseTimeInput = document.getElementById("release-time");
+const domainIdInput = document.getElementById("domain-id");
 
-let domainId = null;
+let domainId = "";
 
-submitButton.disabled = true;
+function updateSubmitButtonState() {
+  submitButton.disabled = domainIdInput.value.trim() === "";
+}
 
 function setReleaseTimeDefault() {
   const now = new Date();
@@ -47,6 +50,18 @@ function updateDomainStatus(status, type = "info") {
   domainStatusEl.className = `status ${type}`;
 }
 
+domainIdInput.addEventListener("input", () => {
+  domainId = domainIdInput.value.trim();
+
+  if (domainId) {
+    updateDomainStatus(`Using domain ID: ${domainId}`);
+  } else {
+    updateDomainStatus("Enter a Noibu domain ID or open a Noibu console project.", "error");
+  }
+
+  updateSubmitButtonState();
+});
+
 function showMessage(text, type) {
   messageEl.textContent = text;
   messageEl.className = `message ${type}`;
@@ -60,28 +75,47 @@ function clearMessage() {
 async function initialize() {
   setReleaseTimeDefault();
   updateDomainStatus("Detecting Noibu project domain…");
+  updateSubmitButtonState();
 
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab || !tab.url) {
-      updateDomainStatus("Unable to detect the current tab URL.", "error");
-      submitButton.disabled = true;
+      updateDomainStatus("Unable to detect the current tab URL. Enter a Noibu domain ID.", "error");
+      domainId = "";
+      updateSubmitButtonState();
       return;
     }
 
-    domainId = extractDomainId(tab.url);
-    if (!domainId) {
-      updateDomainStatus("Open a Noibu console project (https://console.noibu.com/<domain-id>/…)", "error");
-      submitButton.disabled = true;
+    const detectedDomainId = extractDomainId(tab.url);
+    if (!detectedDomainId) {
+      updateDomainStatus(
+        "Unable to detect domain automatically. Enter a Noibu domain ID.",
+        "error",
+      );
+      domainId = "";
+      updateSubmitButtonState();
       return;
     }
 
-    updateDomainStatus(`Domain detected: ${domainId}`);
-    submitButton.disabled = false;
+    const currentDomainValue = domainIdInput.value.trim();
+    domainId = currentDomainValue || detectedDomainId;
+
+    if (!currentDomainValue) {
+      domainIdInput.value = detectedDomainId;
+    }
+
+    updateDomainStatus(
+      `Domain detected automatically: ${detectedDomainId}. You can edit the domain ID if needed.`,
+    );
+    updateSubmitButtonState();
   } catch (error) {
     console.error(error);
-    updateDomainStatus("Unable to access active tab. Please grant the required permissions.", "error");
-    submitButton.disabled = true;
+    updateDomainStatus(
+      "Unable to access active tab. Enter a Noibu domain ID or grant the required permissions.",
+      "error",
+    );
+    domainId = "";
+    updateSubmitButtonState();
   }
 }
 
@@ -89,10 +123,13 @@ releaseForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   clearMessage();
 
-  if (!domainId) {
-    showMessage("Domain ID not detected. Navigate to a Noibu project and try again.", "error");
+  const domainIdValue = domainIdInput.value.trim();
+  if (!domainIdValue) {
+    showMessage("Please provide a Noibu domain ID.", "error");
     return;
   }
+
+  domainId = domainIdValue;
 
   const component = document.getElementById("component").value.trim();
   const title = document.getElementById("title").value.trim();
@@ -120,7 +157,7 @@ releaseForm.addEventListener("submit", async (event) => {
 
   const confirmationLines = [
     "Send release notification with the following details?",
-    `Domain ID: ${domainId}`,
+    `Domain ID: ${domainIdValue}`,
     `Component: ${component}`,
     `Title: ${title}`,
     `Description: ${description}`,
@@ -138,7 +175,7 @@ releaseForm.addEventListener("submit", async (event) => {
   submitButton.textContent = "Sending…";
 
   try {
-    const response = await fetch(`https://webhook.noibu.com/release_webhook/${domainId}`, {
+    const response = await fetch(`https://webhook.noibu.com/release_webhook/${domainIdValue}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
