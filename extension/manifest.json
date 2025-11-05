@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Noibu Release Webhook",
+  "version": "1.0.0",
+  "description": "Send Noibu release notifications directly from the console.",
+  "permissions": ["tabs"],
+  "host_permissions": [
+    "https://webhook.noibu.com/release_webhook/*"
+  ],
+  "action": {
+    "default_title": "Noibu Release Webhook",
+    "default_popup": "popup.html"
+  }
+}
