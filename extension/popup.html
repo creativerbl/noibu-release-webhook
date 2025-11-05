@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noibu Release Webhook</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Noibu Release Webhook</h1>
+      <section class="domain" aria-live="polite">
+        <h2>Detected Domain ID</h2>
+        <p id="domain-value" class="domain__value">Detecting…</p>
+        <p id="domain-help" class="domain__help"></p>
+      </section>
+      <form id="release-form">
+        <label for="component">Component</label>
+        <input type="text" id="component" name="component" required />
+
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title" required />
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3" required></textarea>
+
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="success" selected>Success</option>
+          <option value="failure">Failure</option>
+        </select>
+
+        <label for="version">Version</label>
+        <input type="text" id="version" name="version" required />
+
+        <label for="release-time">Release Time</label>
+        <input type="datetime-local" id="release-time" name="release-time" required />
+
+        <button type="submit" id="submit-button" disabled>Send Release Notification</button>
+      </form>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
