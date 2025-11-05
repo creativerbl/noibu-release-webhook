@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noibu Release Webhook</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Noibu Release Webhook</h1>
+      <p id="domain-status" class="status" aria-live="polite"></p>
+      <form id="release-form">
+        <div class="field-group">
+          <label for="domain-id">Domain ID</label>
+          <div class="domain-input-row">
+            <input
+              type="text"
+              id="domain-id"
+              name="domain-id"
+              required
+              pattern="[0-9a-fA-F-]{36}"
+              title="Enter the 36-character domain ID from console.noibu.com"
+              placeholder="cbc586db-95ec-4afa-9c9a-872ba318f663"
+            />
+            <button type="button" id="detect-domain" class="secondary">Detect</button>
+          </div>
+        </div>
+        <label>
+          Component
+          <input type="text" id="component" name="component" required />
+        </label>
+        <label>
+          Title
+          <input type="text" id="title" name="title" required />
+        </label>
+        <label>
+          Description
+          <textarea id="description" name="description" rows="3" required></textarea>
+        </label>
+        <label>
+          Status
+          <select id="status" name="status">
+            <option value="success" selected>Success</option>
+            <option value="failure">Failure</option>
+          </select>
+        </label>
+        <label>
+          Version
+          <input type="text" id="version" name="version" required />
+        </label>
+        <label>
+          Release Time
+          <input type="datetime-local" id="release-time" name="release-time" required />
+        </label>
+        <button type="submit" id="submit-button" disabled>Send Release Notification</button>
+      </form>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
