@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noibu Release Webhook</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Noibu Release Webhook</h1>
+      <p id="domain-status" class="status"></p>
+      <form id="release-form">
+        <label>
+          Component
+          <input type="text" id="component" name="component" required />
+        </label>
+        <label>
+          Title
+          <input type="text" id="title" name="title" required />
+        </label>
+        <label>
+          Description
+          <textarea id="description" name="description" rows="3" required></textarea>
+        </label>
+        <label>
+          Status
+          <select id="status" name="status">
+            <option value="success" selected>Success</option>
+            <option value="failure">Failure</option>
+          </select>
+        </label>
+        <label>
+          Version
+          <input type="text" id="version" name="version" required />
+        </label>
+        <label>
+          Release Time
+          <input type="datetime-local" id="release-time" name="release-time" required />
+        </label>
+        <button type="submit" id="submit-button">Send Release Notification</button>
+      </form>
+      <p id="message" class="message" role="status"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
