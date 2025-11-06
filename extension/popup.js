@@ -133,10 +133,14 @@ releaseForm.addEventListener("submit", async (event) => {
 
   const component = document.getElementById("component").value.trim();
   const title = document.getElementById("title").value.trim();
-  const description = document.getElementById("description").value.trim();
+  const descriptionInput = document.getElementById("description").value;
   const status = document.getElementById("status").value;
-  const version = document.getElementById("version").value.trim();
+  const versionInput = document.getElementById("version").value;
   const releaseTimeRaw = releaseTimeInput.value;
+
+  const description = descriptionInput.trim();
+  const versionDisplay = versionInput.trim();
+  const version = versionDisplay === "" ? " " : versionDisplay;
 
   let formattedReleaseTime;
   try {
@@ -160,9 +164,9 @@ releaseForm.addEventListener("submit", async (event) => {
     `Domain ID: ${domainIdValue}`,
     `Component: ${component}`,
     `Title: ${title}`,
-    `Description: ${description}`,
+    `Description: ${description || "Not provided"}`,
     `Status: ${status}`,
-    `Version: ${version}`,
+    `Version: ${versionDisplay || "Not provided"}`,
     `Release Time: ${formattedReleaseTime}`,
   ];
 
