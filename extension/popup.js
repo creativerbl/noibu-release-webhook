@@ -139,7 +139,9 @@ releaseForm.addEventListener("submit", async (event) => {
   const releaseTimeRaw = releaseTimeInput.value;
 
   const description = descriptionInput.trim();
-  const version = versionInput.trim();
+  const version = versionInput.trim() === "" ? " " : versionInput.trim();
+  const versionConfirmationText =
+    version === " " ? "(blank — sending single space)" : version;
 
   let formattedReleaseTime;
   try {
@@ -165,7 +167,7 @@ releaseForm.addEventListener("submit", async (event) => {
     `Title: ${title}`,
     `Description: ${description || "Not provided"}`,
     `Status: ${status}`,
-    `Version: ${version || "Not provided"}`,
+    `Version: ${versionConfirmationText}`,
     `Release Time: ${formattedReleaseTime}`,
   ];
 
